@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+#    password: newpass
+#    url: jdbc:mysql://127.0.0.1/sell?characterEncoding=utf-8&useSSL=false
+    password: 123456
+    url: jdbc:mysql://10.0.0.52/sell?characterEncoding=utf-8&useSSL=false
+#    password: 123456
+#    url: jdbc:mysql://192.168.1.115/sell?characterEncoding=utf-8&useSSL=false
+  jpa:
+    show-sql: true
+#  jackson:
+#    default-property-inclusion: non_null
+server:
+  servlet:
+    context-path: /isell
+
