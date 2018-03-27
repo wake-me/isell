@@ -37,7 +37,7 @@ public class OrderForm2OrderDTOConverter {
                     }.getType());
 
         }catch (Exception e){
-            log.error("【对象装换】错误,json={}",orderForm.getItems());
+            log.error("【对象装换】错误, string={}",orderForm.getItems());
             throw new ISellException(ResultEnum.PARAM_ERROR);
         }
 

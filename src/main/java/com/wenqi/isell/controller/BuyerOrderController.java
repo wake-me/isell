@@ -49,7 +49,8 @@ public class BuyerOrderController {
     public HttpResult create(@Valid OrderForm orderForm, BindingResult bindingResult){
         if (bindingResult.hasErrors()){
             log.error("buyer order create 参数不正确, orderForm={}",orderForm);
-            throw new ISellException(ResultEnum.PARAM_ERROR);
+            throw new ISellException(ResultEnum.PARAM_ERROR.getCode(),
+                    bindingResult.getFieldError().getDefaultMessage());
         }
 
         OrderDTO  orderDTO = OrderForm2OrderDTOConverter.convert(orderForm);

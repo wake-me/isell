@@ -1,8 +1,6 @@
 package com.wenqi.isell.form;
 
 import lombok.Data;
-import org.hibernate.validator.constraints.NotEmpty;
-
 import javax.validation.constraints.NotBlank;
 
 /**
