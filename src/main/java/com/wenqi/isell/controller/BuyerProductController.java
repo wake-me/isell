@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 /**
  * @Author: 文琪
- * @Description:  买家商品
+ * @Description: 买家商品
  * @Date: Created in 2018/3/26 下午12:38
  * @Modified By:
  */
@@ -35,15 +35,16 @@ public class BuyerProductController {
     private ProductInfoService infoService;
 
     /**
-     *  买家查询所有上架的商品
+     * 买家查询所有上架的商品
+     *
      * @return
      * @throws Exception
      */
     @GetMapping("/list")
-    public HttpResult list() throws Exception{
+    public HttpResult list() throws Exception {
 
         // 1.查询所有上架商品
-        List<ProductInfo> productInfoList =  infoService.findUpAll();
+        List<ProductInfo> productInfoList = infoService.findUpAll();
 
         // 2.查询类目(一次查询)
         List<Integer> categoryTypeList = new ArrayList<>();
@@ -60,23 +61,22 @@ public class BuyerProductController {
 
         // 3.数据拼装
         List<ProductVO> productVOList = new ArrayList<>();
-        for (ProductCategory productCategory: productCategoryList){
+        for (ProductCategory productCategory : productCategoryList) {
             ProductVO productVO = new ProductVO();
             productVO.setCategoryName(productCategory.getCategoryName());
             productVO.setCategoryType(productCategory.getCategoryType());
 
             List<ProductInfoVO> productInfoVOList = new ArrayList<>();
-            for (ProductInfo productInfo: productInfoList){
-                if(productInfo.getCategoryType().equals(productCategory.getCategoryType())){
+            for (ProductInfo productInfo : productInfoList) {
+                if (productInfo.getCategoryType().equals(productCategory.getCategoryType())) {
                     ProductInfoVO productInfoVO = new ProductInfoVO();
-                    BeanUtils.copyProperties(productInfo,productInfoVO);
+                    BeanUtils.copyProperties(productInfo, productInfoVO);
                     productInfoVOList.add(productInfoVO);
                 }
             }
             productVO.setProductInfoVOList(productInfoVOList);
             productVOList.add(productVO);
         }
-
 
 
         return ResultUtil.success(productVOList);

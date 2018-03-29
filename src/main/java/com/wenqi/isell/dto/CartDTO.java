@@ -11,10 +11,14 @@ import lombok.Data;
 @Data
 public class CartDTO {
 
-    /** 商品ID */
+    /**
+     * 商品ID
+     */
     private String productId;
 
-    /** 商品数量 */
+    /**
+     * 商品数量
+     */
     private Integer productQuantity;
 
     public CartDTO() {

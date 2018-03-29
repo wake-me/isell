@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @ Author: 文琪
@@ -31,8 +32,11 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Override
     public ProductInfo findOne(String productId) {
+        Optional<ProductInfo> optionalInfo = infoDao.findById(productId);
+        if (optionalInfo.isPresent())
+            return optionalInfo.get();
 
-        return infoDao.getOne(productId);
+        return null;
     }
 
     @Override
@@ -54,15 +58,15 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     @Transactional
     public void increaseStock(List<CartDTO> cartDTOList) {
         for (CartDTO item : cartDTOList) {
-            ProductInfo info = infoDao.getOne(item.getProductId());
-            if (info == null) {
+            Optional<ProductInfo> optionalInfo = infoDao.findById(item.getProductId());
+            if (!optionalInfo.isPresent()) {
                 log.error("【添加库存】商品不存在 productId={}", item.getProductId());
                 throw new ISellException(ResultEnum.PRODUCT_NOT_EXIST);
             }
-            Integer productStock = info.getProductStock() + item.getProductQuantity();
-            info.setProductStock(productStock);
+            Integer productStock = optionalInfo.get().getProductStock() + item.getProductQuantity();
+            optionalInfo.get().setProductStock(productStock);
 
-            infoDao.save(info);
+            infoDao.save(optionalInfo.get());
         }
 
     }
@@ -71,18 +75,19 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     @Transactional
     public void decreaseStock(List<CartDTO> cartDTOList) {
         for (CartDTO item : cartDTOList) {
-            ProductInfo info = infoDao.getOne(item.getProductId());
-            if (info == null) {
+            Optional<ProductInfo> optionalInfo = infoDao.findById(item.getProductId());
+            if (!optionalInfo.isPresent()) {
                 log.error("【减库存】商品不存在 productId= {}", item.getProductId());
                 throw new ISellException(ResultEnum.PRODUCT_NOT_EXIST);
             }
-            Integer result = info.getProductStock() - item.getProductQuantity();
+            Integer result = optionalInfo.get().getProductStock() - item.getProductQuantity();
             if (result < 0) {
-                log.error("【减库存】商品库存不够 productId={},productQuantity={},productStock={}", item.getProductId(), item.getProductQuantity(), info.getProductStock());
+                log.error("【减库存】商品库存不够 productId={},productQuantity={},productStock={}",
+                        item.getProductId(), item.getProductQuantity(), optionalInfo.get().getProductStock());
             }
-            info.setProductStock(result);
+            optionalInfo.get().setProductStock(result);
 
-            infoDao.save(info);
+            infoDao.save(optionalInfo.get());
         }
     }
 

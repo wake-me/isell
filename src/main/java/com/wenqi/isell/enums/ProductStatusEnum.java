@@ -9,16 +9,15 @@ import lombok.Getter;
  * @Modified By:
  */
 @Getter
-public enum  ProductStatusEnum {
-    UP(1,"在架"),
-    DOWN(2,"下架")
-    ;
+public enum ProductStatusEnum {
+    UP(1, "在架"),
+    DOWN(2, "下架");
 
     private Integer code;
 
     private String message;
 
-     ProductStatusEnum(Integer code, String message) {
+    ProductStatusEnum(Integer code, String message) {
         this.code = code;
         this.message = message;
     }

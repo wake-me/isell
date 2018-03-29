@@ -18,26 +18,40 @@ import java.math.BigDecimal;
 @DynamicUpdate
 public class OrderDetail {
 
-    /** 详情ID. */
+    /**
+     * 详情ID.
+     */
     @Id
     private String detailId;// varchar(32) NOT NULL,
 
-    /** 订单ID. */
+    /**
+     * 订单ID.
+     */
     private String orderId; // varchar(32) NOT NULL,
 
-    /** 商品ID. */
+    /**
+     * 商品ID.
+     */
     private String productId; // varchar(32) NOT NULL,
 
-    /** 商品名称. */
+    /**
+     * 商品名称.
+     */
     private String productName; // varchar(64) NOT NULL COMMENT '商品名称',
 
-    /** 当前价格. */
+    /**
+     * 当前价格.
+     */
     private BigDecimal productPrice; // decimal(8,2) NOT NULL COMMENT '当前价格,单位分',
 
-    /** 数量 */
+    /**
+     * 数量
+     */
     private Integer productQuantity; //` int(11) NOT NULL COMMENT '数量',
 
-    /** 小图 */
+    /**
+     * 小图
+     */
     private String productIcon;// varchar(512) DEFAULT NULL COMMENT '小图',
 
 //    /** 创建时间 */

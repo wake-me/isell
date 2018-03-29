@@ -13,7 +13,7 @@ public class ISellException extends RuntimeException {
 
     private Integer code;
 
-    public ISellException(ResultEnum resultEnum){
+    public ISellException(ResultEnum resultEnum) {
         super(resultEnum.getMsg());
         this.code = resultEnum.getCode();
     }
@@ -26,7 +26,7 @@ public class ISellException extends RuntimeException {
         this.code = code;
     }
 
-    public ISellException(Integer code, String message){
+    public ISellException(Integer code, String message) {
         super(message);
         this.code = code;
     }

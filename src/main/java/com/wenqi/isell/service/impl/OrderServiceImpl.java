@@ -28,6 +28,7 @@ import org.springframework.util.CollectionUtils;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -116,8 +117,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public OrderDTO findOne(String orderId) {
 
-        OrderMaster master = masterDao.getOne(orderId);
-        if (master == null) {
+        Optional<OrderMaster> optionalMaster = masterDao.findById(orderId);
+        if (!optionalMaster.isPresent()) {
             log.info("order findOne 订单不存在。orderId= {}", orderId);
             throw new ISellException(ResultEnum.ORDER_NOT_EXIST);
         }
@@ -129,7 +130,7 @@ public class OrderServiceImpl implements OrderService {
         }
 
         OrderDTO orderDTO = new OrderDTO();
-        BeanUtils.copyProperties(master, orderDTO);
+        BeanUtils.copyProperties(optionalMaster.get(), orderDTO);
         orderDTO.setOrderDetailList(detailList);
 
         return orderDTO;

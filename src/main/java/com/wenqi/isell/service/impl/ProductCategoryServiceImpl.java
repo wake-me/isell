@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @Author: 文琪
@@ -22,7 +23,10 @@ public class ProductCategoryServiceImpl implements ProductCategoryService {
 
     @Override
     public ProductCategory findOne(Integer categoryId) {
-        return categoryDao.getOne(categoryId);
+        Optional<ProductCategory> optional = categoryDao.findById(categoryId);
+        if (optional.isPresent())
+            return optional.get();
+        return null;
     }
 
     @Override

@@ -21,13 +21,13 @@ public class ExceptionHandel {
 
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
-    public HttpResult handel(Exception e){
-        if(e instanceof ISellException){
+    public HttpResult handel(Exception e) {
+        if (e instanceof ISellException) {
             ISellException iSellException = (ISellException) e;
-            return ResultUtil.error(iSellException.getCode(),iSellException.getMessage());
-        }else {
-            log.error("『系统异常』,{}",e.getMessage());
-            return ResultUtil.error(ResultEnum.UNKONW_ERROR.getCode(),ResultEnum.UNKONW_ERROR.getMsg());
+            return ResultUtil.error(iSellException.getCode(), iSellException.getMessage());
+        } else {
+            log.error("『系统异常』,{}", e.getMessage());
+            return ResultUtil.error(ResultEnum.UNKONW_ERROR.getCode(), ResultEnum.UNKONW_ERROR.getMsg());
 
         }
     }

@@ -15,17 +15,17 @@ import java.util.stream.Collectors;
  */
 public class OrderMaster2OrderDTOConverter {
 
-    public static OrderDTO convert(OrderMaster master){
+    public static OrderDTO convert(OrderMaster master) {
 
         OrderDTO orderDTO = new OrderDTO();
 
-        BeanUtils.copyProperties(master,orderDTO);
+        BeanUtils.copyProperties(master, orderDTO);
 
         return orderDTO;
     }
 
-    public static List<OrderDTO> convert(List<OrderMaster> orderMasterList){
-        return  orderMasterList.stream().map(e ->
+    public static List<OrderDTO> convert(List<OrderMaster> orderMasterList) {
+        return orderMasterList.stream().map(e ->
                 convert(e)
         ).collect(Collectors.toList());
 

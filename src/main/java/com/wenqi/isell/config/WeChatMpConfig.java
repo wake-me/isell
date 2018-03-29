@@ -21,18 +21,19 @@ public class WeChatMpConfig {
     private WeChatAccountConfig accountConfig;
 
     @Bean
-    public WxMpService wxMpService(){
+    public WxMpService wxMpService() {
         WxMpService wxMpService = new WxMpServiceImpl();
         wxMpService.setWxMpConfigStorage(wxMpConfigStorage());
         return wxMpService;
     }
 
     /**
-     *  基于内存的配置
+     * 基于内存的配置
+     *
      * @return WxMpInMemoryConfigStorage
      */
     @Bean
-    public WxMpConfigStorage wxMpConfigStorage(){
+    public WxMpConfigStorage wxMpConfigStorage() {
         WxMpInMemoryConfigStorage wxMpConfigStorage = new WxMpInMemoryConfigStorage();
         wxMpConfigStorage.setAppId(accountConfig.getMpAppId());
         wxMpConfigStorage.setSecret(accountConfig.getMpAppSecret());

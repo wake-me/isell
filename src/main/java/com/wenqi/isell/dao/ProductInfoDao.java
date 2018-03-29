@@ -11,7 +11,7 @@ import java.util.List;
  * @Date: Created in 2018/3/26 上午9:38
  * @Modified By:
  */
-public interface ProductInfoDao extends JpaRepository<ProductInfo,String> {
+public interface ProductInfoDao extends JpaRepository<ProductInfo, String> {
 
     List<ProductInfo> findByProductStatus(Integer productStatus);
 

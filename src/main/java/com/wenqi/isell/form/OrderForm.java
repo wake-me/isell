@@ -1,6 +1,7 @@
 package com.wenqi.isell.form;
 
 import lombok.Data;
+
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -15,7 +16,7 @@ public class OrderForm {
     /**
      * 买家姓名
      */
-    @NotBlank(message= "姓名必填")
+    @NotBlank(message = "姓名必填")
     private String name;
 
     /**

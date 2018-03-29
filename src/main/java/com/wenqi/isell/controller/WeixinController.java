@@ -19,17 +19,16 @@ import org.springframework.web.client.RestTemplate;
 public class WeixinController {
 
 
-
     @GetMapping("/auth")
-    public void auth(@RequestParam String code){
+    public void auth(@RequestParam String code) {
         log.info("进入auth");
-        log.info("code={}",code);
+        log.info("code={}", code);
 
-        String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx668678456aca2b35&secret=c23e0a3af787b7fb3e79cffaa4643c8a&code="+code+"&grant_type=authorization_code";
+        String url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=wx668678456aca2b35&secret=c23e0a3af787b7fb3e79cffaa4643c8a&code=" + code + "&grant_type=authorization_code";
 
         RestTemplate restTemplate = new RestTemplate();
-        String response =  restTemplate.getForObject(url,String.class);
-        log.info("response={}",response);
+        String response = restTemplate.getForObject(url, String.class);
+        log.info("response={}", response);
 
     }
 }
