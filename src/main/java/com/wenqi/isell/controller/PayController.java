@@ -9,9 +9,8 @@ import com.wenqi.isell.service.PayService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
@@ -34,10 +33,22 @@ public class PayController {
     @Autowired
     private PayService payService;
 
+    /**
+     * 微信支付
+     * @param orderId
+     * @param returnUrl
+     * @param map
+     * @return
+     */
     @GetMapping("/create")
-    public ModelAndView create(@RequestParam("orderId") String orderId,
-                               @RequestParam("returnUrl") String returnUrl,
+    public ModelAndView create(@RequestParam(value = "orderId" ,defaultValue = "") String orderId,
+                               @RequestParam(value = "returnUrl", defaultValue = "") String returnUrl,
                                Map<String, Object> map) {
+
+        if(StringUtils.isEmpty(orderId) || StringUtils.isEmpty(returnUrl)){
+            log.error("【订单支付】参数不正确");
+            throw new ISellException(ResultEnum.PARAM_ERROR);
+        }
 
         // 1.查询订单
         OrderDTO orderDTO = orderService.findOne(orderId);
@@ -53,5 +64,17 @@ public class PayController {
         map.put("payResponse", payResponse);
         map.put("returnUrl",returnUrl);
         return new ModelAndView("pay/create", map);
+    }
+
+    /**
+     * 微信支付异步通知
+     * @param notifyData
+     * @return
+     */
+    @PostMapping("/wechat/notify")
+    public ModelAndView notify(@RequestBody String notifyData){
+        payService.notify(notifyData);
+        //返回给微信处理结果
+        return new ModelAndView("pay/success");
     }
 }

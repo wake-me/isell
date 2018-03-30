@@ -1,10 +1,12 @@
 package com.wenqi.isell.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.wenqi.isell.entity.OrderDetail;
 import com.wenqi.isell.enums.OrderStatusEnum;
 import com.wenqi.isell.enums.PayStatusEnum;
+import com.wenqi.isell.util.EnumUtil;
 import com.wenqi.isell.util.serializer.Date2LongSerializer;
 import lombok.Data;
 
@@ -79,4 +81,14 @@ public class OrderDTO {
     List<OrderDetail> orderDetailList;
 
 
+    // JsonInclude注解使对象转Json的时候不处理它
+    @JsonInclude
+    public OrderStatusEnum getOrderStatusEnum(){
+        return EnumUtil.getByCode(orderStatus,OrderStatusEnum.class);
+    }
+
+    @JsonInclude
+    public PayStatusEnum getPayStatusEnum(){
+        return EnumUtil.getByCode(payStatus,PayStatusEnum.class);
+    }
 }

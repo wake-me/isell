@@ -1,10 +1,17 @@
 package com.wenqi.isell.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.wenqi.isell.enums.ProductStatusEnum;
+import com.wenqi.isell.util.EnumUtil;
+import com.wenqi.isell.util.serializer.Date2LongSerializer;
 import lombok.Data;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.math.BigDecimal;
+import java.util.Date;
 
 /**
  * @Author: 文琪
@@ -14,6 +21,7 @@ import java.math.BigDecimal;
  */
 @Entity
 @Data
+@DynamicUpdate
 public class ProductInfo {
 
     @Id
@@ -56,4 +64,20 @@ public class ProductInfo {
     //       `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     //        `update_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
 
+    /**
+     * 创建时间
+     */
+    @JsonSerialize(using = Date2LongSerializer.class)
+    private Date createTime; // timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+
+    /**
+     * 更新时间
+     */
+    @JsonSerialize(using = Date2LongSerializer.class)
+    private Date updateTime; // timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '修改时间',
+
+    @JsonInclude
+    public ProductStatusEnum getProductStatusEnum(){
+        return EnumUtil.getByCode(productStatus,ProductStatusEnum.class);
+    }
 }

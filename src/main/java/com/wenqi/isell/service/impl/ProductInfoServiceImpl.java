@@ -30,6 +30,11 @@ public class ProductInfoServiceImpl implements ProductInfoService {
     @Autowired
     private ProductInfoDao infoDao;
 
+    /**
+     * 根据ID查询商品详情
+     * @param productId
+     * @return
+     */
     @Override
     public ProductInfo findOne(String productId) {
         Optional<ProductInfo> optionalInfo = infoDao.findById(productId);
@@ -39,21 +44,40 @@ public class ProductInfoServiceImpl implements ProductInfoService {
         return null;
     }
 
+    /**
+     * 查询在架所有商品
+     * @return
+     */
     @Override
     public List<ProductInfo> findUpAll() {
         return infoDao.findByProductStatus(ProductStatusEnum.UP.getCode());
     }
 
+    /**
+     * 分页查询所有商品
+     * @param pageable
+     * @return
+     */
     @Override
     public Page<ProductInfo> findAll(Pageable pageable) {
         return infoDao.findAll(pageable);
     }
 
+    /**
+     * 新增商品
+     * @param productInfo
+     * @return
+     */
     @Override
     public ProductInfo save(ProductInfo productInfo) {
         return infoDao.save(productInfo);
     }
 
+
+    /**
+     * 增加库存
+     * @param cartDTOList
+     */
     @Override
     @Transactional
     public void increaseStock(List<CartDTO> cartDTOList) {
@@ -71,6 +95,10 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
     }
 
+    /**
+     * 减少库存
+     * @param cartDTOList
+     */
     @Override
     @Transactional
     public void decreaseStock(List<CartDTO> cartDTOList) {
@@ -89,6 +117,48 @@ public class ProductInfoServiceImpl implements ProductInfoService {
 
             infoDao.save(optionalInfo.get());
         }
+    }
+
+    /**
+     * 商品上架
+     * @param productId
+     * @return
+     */
+    @Override
+    public ProductInfo onSale(String productId) {
+        Optional<ProductInfo> info = infoDao.findById(productId);
+        if (!info.isPresent()){
+            log.error("【商品上架】 商品不存在, productId={}",productId);
+            throw new ISellException(ResultEnum.PRODUCT_NOT_EXIST);
+        }
+        if (info.get().getProductStatus().equals(ProductStatusEnum.UP.getCode())){
+            log.error("【商品上架】商品是在架状态");
+            throw new ISellException(ResultEnum.PRODUCT_STATUS_ERROR);
+        }
+        info.get().setProductStatus(ProductStatusEnum.UP.getCode());
+        ProductInfo updateResult = infoDao.save(info.get());
+        return updateResult;
+    }
+
+    /**
+     * 商品下架
+     * @param productId
+     * @return
+     */
+    @Override
+    public ProductInfo offSale(String productId) {
+        Optional<ProductInfo> info = infoDao.findById(productId);
+        if (!info.isPresent()){
+            log.error("【商品下架】 商品不存在, productId={}",productId);
+            throw new ISellException(ResultEnum.PRODUCT_NOT_EXIST);
+        }
+        if (info.get().getProductStatus().equals(ProductStatusEnum.DOWN.getCode())){
+            log.error("【商品下架】商品是下架状态");
+            throw new ISellException(ResultEnum.PRODUCT_STATUS_ERROR);
+        }
+        info.get().setProductStatus(ProductStatusEnum.DOWN.getCode());
+        ProductInfo updateResult = infoDao.save(info.get());
+        return updateResult;
     }
 
 }

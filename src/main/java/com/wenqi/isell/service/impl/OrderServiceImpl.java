@@ -13,6 +13,7 @@ import com.wenqi.isell.enums.PayStatusEnum;
 import com.wenqi.isell.enums.ResultEnum;
 import com.wenqi.isell.exception.ISellException;
 import com.wenqi.isell.service.OrderService;
+import com.wenqi.isell.service.PayService;
 import com.wenqi.isell.service.ProductInfoService;
 import com.wenqi.isell.util.KeyUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +50,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private ProductInfoService infoService;
+
+    @Autowired
+    private PayService payService;
 
     /**
      * 创建订单
@@ -183,9 +187,9 @@ public class OrderServiceImpl implements OrderService {
 
         infoService.increaseStock(cartDTOList);
 
-        // TODO 如果已经支付还需要退款
+        //  如果已经支付还需要退款
         if (orderDTO.getOrderStatus().equals(PayStatusEnum.SUCCESS.getCode())) {
-
+            payService.refund(orderDTO);
         }
 
         return orderDTO;
@@ -252,4 +256,15 @@ public class OrderServiceImpl implements OrderService {
 
         return orderDTO;
     }
+
+    @Override
+    public Page<OrderDTO> findList(Pageable pageable) {
+        Page<OrderMaster> orderMasterPage = masterDao.findAll(pageable);
+
+        List<OrderDTO> orderDTOList = OrderMaster2OrderDTOConverter.convert(orderMasterPage.getContent());
+
+        return new PageImpl<OrderDTO>(orderDTOList, pageable, orderMasterPage.getTotalElements());
+    }
+
+
 }
