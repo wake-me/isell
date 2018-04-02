@@ -9,7 +9,10 @@ import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -22,7 +25,10 @@ import java.util.Date;
 @Entity
 @Data
 @DynamicUpdate
-public class ProductInfo {
+public class ProductInfo implements Serializable {
+
+    private static final long serialVersionUID = 6399186181668983148L;
+
 
     @Id
     private String productId; // `product_id` varchar(32) NOT NULL,
@@ -55,7 +61,7 @@ public class ProductInfo {
     /**
      * 商品状态 0.正常 1.下架
      */
-    private Integer productStatus;// tinyint(3) DEFAULT '1' COMMENT '商品状态,0正常1下架',
+    private Integer productStatus = ProductStatusEnum.UP.getCode();// tinyint(3) DEFAULT '1' COMMENT '商品状态,0正常1下架',
 
     /**
      * 类目编号.
@@ -79,5 +85,8 @@ public class ProductInfo {
     @JsonInclude
     public ProductStatusEnum getProductStatusEnum(){
         return EnumUtil.getByCode(productStatus,ProductStatusEnum.class);
+    }
+
+    public ProductInfo() {
     }
 }

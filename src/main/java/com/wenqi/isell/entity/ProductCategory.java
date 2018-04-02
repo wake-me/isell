@@ -1,5 +1,7 @@
 package com.wenqi.isell.entity;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.wenqi.isell.util.serializer.Date2LongSerializer;
 import lombok.Data;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -33,6 +35,12 @@ public class ProductCategory {
      * 类目类型.
      */
     private Integer categoryType;
+
+    @JsonSerialize(using = Date2LongSerializer.class)
+    private Date createTime;
+
+    @JsonSerialize(using = Date2LongSerializer.class)
+    private Date updateTime;
 
 
     public ProductCategory(String categoryName, Integer categoryType) {

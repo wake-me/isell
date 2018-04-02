@@ -29,7 +29,6 @@ public class ProductInfoDaoTest {
     @Test
     public void saveTest(){
         ProductInfo info = new ProductInfo();
-        info.setProductId("123456");
         info.setProductName("海参粥");
         info.setProductPrice(new BigDecimal(3.2));
         info.setProductStock(100);
