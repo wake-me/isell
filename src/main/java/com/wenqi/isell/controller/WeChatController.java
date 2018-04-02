@@ -1,5 +1,6 @@
 package com.wenqi.isell.controller;
 
+import com.wenqi.isell.config.ProjectUrlConfig;
 import com.wenqi.isell.enums.ResultEnum;
 import com.wenqi.isell.exception.ISellException;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,12 @@ public class WeChatController {
     @Autowired
     private WxMpService wxMpService;
 
+    @Autowired
+    private WxMpService wxOpenService;
+
+    @Autowired
+    private ProjectUrlConfig projectUrlConfig;
+
     /**
      * 微信构造网页授权url
      *
@@ -40,7 +47,7 @@ public class WeChatController {
     public String authorize(@RequestParam("returnUrl") String returnUrl) {
 
         // 1. 配置
-        String url = "http://wake.nat100.top/sell/wechat/userInfo";
+//        String url = "http://wake.nat100.top/sell/wechat/userInfo";
         // 2. 调用方法
         String urlEncoder = null;
         try {
@@ -53,7 +60,7 @@ public class WeChatController {
         // 应用授权作用域，OAuth2Scope.SNSAPI_BASE （不弹出授权页面，直接跳转，只能获取用户openid），
         // SNSAPI_USERINFO （弹出授权页面，可通过openid拿到昵称、性别、所在地。并且，
         // 即使在未关注的情况下，只要用户授权，也能获取其信息 ）
-        String redirectUrl = wxMpService.oauth2buildAuthorizationUrl(url,
+        String redirectUrl = wxMpService.oauth2buildAuthorizationUrl(projectUrlConfig.weChatMpAuthorize,
                 WxConsts.OAuth2Scope.SNSAPI_BASE, urlEncoder);
         log.info("微信网页授权 获取code, result={}", redirectUrl);
         return "redirect:" + redirectUrl;
@@ -75,6 +82,38 @@ public class WeChatController {
             wxMpOAuth2AccessToken = wxMpService.oauth2getAccessToken(code);
         } catch (WxErrorException e) {
             log.error("[微信网页授权] {}", e);
+            throw new ISellException(ResultEnum.WECHAT_MP_ERROR.getCode(), e.getError().getErrorMsg());
+        }
+        String openid = wxMpOAuth2AccessToken.getOpenId();
+
+        return "redirect:" + returnUrl + "?openid=" + openid;
+    }
+
+    @GetMapping("/qrAuthorize")
+    public String qrAuthorize(@RequestParam("returnUrl") String returnUrl){
+//        String url ="http://wake.nat100.top/sell/wechat/qrUserInfo";
+        // 2. 调用方法
+        String urlEncoder = null;
+        try {
+            urlEncoder = URLEncoder.encode(returnUrl, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            log.error("微信网页扫码授权 returnURL 转 URLEncoder ", e);
+            throw new ISellException(ResultEnum.UNKONW_ERROR);
+        }
+        String redirectUrl = wxOpenService.buildQrConnectUrl(projectUrlConfig.wxChatOpenAuthorize,WxConsts.QrConnectScope.SNSAPI_LOGIN,urlEncoder);
+        log.info("微信网页扫码授权 获取redirectUrl, result={}", redirectUrl);
+        return "redirect:" + redirectUrl;
+    }
+
+    @GetMapping("/qrUserInfo")
+    public String qrUserInfo(@RequestParam String code,
+                           @RequestParam("state") String returnUrl) {
+
+        WxMpOAuth2AccessToken wxMpOAuth2AccessToken = new WxMpOAuth2AccessToken();
+        try {
+            wxMpOAuth2AccessToken = wxOpenService.oauth2getAccessToken(code);
+        } catch (WxErrorException e) {
+            log.error("[微信网页扫码授权] {}", e);
             throw new ISellException(ResultEnum.WECHAT_MP_ERROR.getCode(), e.getError().getErrorMsg());
         }
         String openid = wxMpOAuth2AccessToken.getOpenId();
