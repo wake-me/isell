@@ -1,13 +1,17 @@
 package com.wenqi.isell.handel;
 
+import com.wenqi.isell.config.ProjectUrlConfig;
 import com.wenqi.isell.enums.ResultEnum;
 import com.wenqi.isell.exception.ISellException;
+import com.wenqi.isell.exception.SellerAuthorizeException;
 import com.wenqi.isell.util.HttpResult;
 import com.wenqi.isell.util.ResultUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 /**
  * @ Author: 文琪
@@ -18,6 +22,20 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ControllerAdvice
 @Slf4j
 public class ExceptionHandel {
+
+    @Autowired
+    private ProjectUrlConfig projectUrlConfig;
+
+    // 拦截登录异常
+    @ExceptionHandler(value = SellerAuthorizeException.class)
+    public ModelAndView handlerAuthorizeException(){
+        return new ModelAndView("redirect:"
+                .concat(projectUrlConfig.getWxChatOpenAuthorize())
+                .concat("/sell/wechat/qrAuthorize")
+                .concat("?returnUrl=")
+                .concat(projectUrlConfig.getSell())
+                .concat("/sell/seller/login"));
+    }
 
     @ExceptionHandler(value = Exception.class)
     @ResponseBody
@@ -31,5 +49,6 @@ public class ExceptionHandel {
 
         }
     }
+
 
 }
