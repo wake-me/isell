@@ -15,6 +15,7 @@ import com.wenqi.isell.exception.ISellException;
 import com.wenqi.isell.service.OrderService;
 import com.wenqi.isell.service.PayService;
 import com.wenqi.isell.service.ProductInfoService;
+import com.wenqi.isell.service.PushMessageService;
 import com.wenqi.isell.util.KeyUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -53,6 +54,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private PayService payService;
+
+    @Autowired
+    private PushMessageService pushMessageService;
 
     /**
      * 创建订单
@@ -202,6 +206,7 @@ public class OrderServiceImpl implements OrderService {
      * @return OrderDTO
      */
     @Override
+    @Transactional
     public OrderDTO finish(OrderDTO orderDTO) {
         // 查看订单状态
         if (!orderDTO.getOrderStatus().equals(OrderStatusEnum.NEW.getCode())) {
@@ -219,7 +224,8 @@ public class OrderServiceImpl implements OrderService {
             log.error("order finish 订单状态更新失败,orderMaster={}", orderMaster);
             throw new ISellException(ResultEnum.ORDER_UPDATE_FAIL);
         }
-
+        // 推送微信模板消息
+        pushMessageService.orderStatus(orderDTO);
         return orderDTO;
     }
 
