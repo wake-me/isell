@@ -29,20 +29,21 @@ public class PushMessageServiceImpl implements PushMessageService {
 
     @Override
     public void orderStatus(OrderDTO orderDTO) {
-        WxMpTemplateMessage templateMessage = WxMpTemplateMessage.builder().build();
-        templateMessage.setTemplateId(accountConfig.getTemplateId().get("orderStatus"));
-        templateMessage.setToUser(orderDTO.getBuyerOpenid());
 
-        WxMpTemplateData data = new WxMpTemplateData();
-        templateMessage.addWxMpTemplateData(new WxMpTemplateData("first", "亲，请记得收货。"));
-        templateMessage.addWxMpTemplateData(new WxMpTemplateData("keyword1", "微信点餐"));
-        templateMessage.addWxMpTemplateData(new WxMpTemplateData("keyword2", "18888888888"));
-        templateMessage.addWxMpTemplateData(new WxMpTemplateData("keyword3", orderDTO.getOrderId()));
-        templateMessage.addWxMpTemplateData(new WxMpTemplateData("keyword4", orderDTO.getOrderStatusEnum().getMessage()));
-        templateMessage.addWxMpTemplateData(new WxMpTemplateData("keyword5", "￥" + orderDTO.getOrderAmount()));
-        templateMessage.addWxMpTemplateData(new WxMpTemplateData("remark", "欢迎再次光临！"));
 
         try {
+            WxMpTemplateMessage templateMessage = WxMpTemplateMessage.builder().build();
+            templateMessage.setTemplateId(accountConfig.getTemplateId().get("orderStatus"));
+            templateMessage.setToUser(orderDTO.getBuyerOpenid());
+
+            templateMessage.addWxMpTemplateData(new WxMpTemplateData("first", "亲，请记得收货。"));
+            templateMessage.addWxMpTemplateData(new WxMpTemplateData("keyword1", "微信点餐"));
+            templateMessage.addWxMpTemplateData(new WxMpTemplateData("keyword2", "18888888888"));
+            templateMessage.addWxMpTemplateData(new WxMpTemplateData("keyword3", orderDTO.getOrderId()));
+            templateMessage.addWxMpTemplateData(new WxMpTemplateData("keyword4", orderDTO.getOrderStatusEnum().getMessage()));
+            templateMessage.addWxMpTemplateData(new WxMpTemplateData("keyword5", "￥" + orderDTO.getOrderAmount()));
+            templateMessage.addWxMpTemplateData(new WxMpTemplateData("remark", "欢迎再次光临！"));
+
             wxMpService.getTemplateMsgService().sendTemplateMsg(templateMessage);
         } catch (WxErrorException e) {
             log.error("【消息模板消息】 发送失败,{}", e);
