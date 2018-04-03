@@ -12,6 +12,11 @@ spring:
     show-sql: true
   jackson:
     default-property-inclusion: non_null
+  redis:
+    host: 10.0.0.27
+    port: 6379
+    password:
+
 server:
   servlet:
     context-path: /sell
