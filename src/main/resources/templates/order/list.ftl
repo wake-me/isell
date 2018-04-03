@@ -75,6 +75,66 @@
     </div>
 </div>
 
+ <#--新订单弹出-->
+<div class="modal fade" id="myModal" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+                <h4 class="modal-title" id="myModalLabel">
+                    提醒
+                </h4>
+            </div>
+            <div class="modal-body">
+                您有新的订单
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="javascript:document.getElementById('notice').pause() " class="btn btn-default" data-dismiss="modal">关闭</button>
+                <button onclick="location.reload()" type="button" class="btn btn-primary">查看新订单</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<#--播放音乐-->
+<audio id="notice" loop="loop">
+    <source src="/sell/mp3/song.mp3" type="audio/mpeg"/>
+</audio>
+<script src="https://cdn.bootcss.com/jquery/1.12.4/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+
+<script>
+    var websocket = null;
+    if ('WebSocket' in window) {
+        websocket = new WebSocket('ws://wake.nat100.top/sell/webSocket');
+    } else {
+        alert("该浏览器不支持websocket！")
+    }
+    ;
+
+    websocket.onopen = function (ev) {
+        console.log('建立连接')
+    };
+
+    websocket.onclose = function (ev) {
+        console.log('连接关闭')
+    };
+
+    websocket.onmessage = function (ev) {
+        console.log('收到消息：' + ev.data)
+        // 弹出提醒 ，播放音乐
+        $('#myModal').modal("show");
+        document.getElementById("notice").play();
+    }
+
+    websocket.onerror = function (ev) {
+        alert("websocket通信发送错误！")
+    }
+
+    window.onbeforeunload = function (ev) {
+        websocket.close();
+    }
+</script>
 </body>
 </html>
 

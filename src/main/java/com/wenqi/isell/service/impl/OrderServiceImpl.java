@@ -12,10 +12,7 @@ import com.wenqi.isell.enums.OrderStatusEnum;
 import com.wenqi.isell.enums.PayStatusEnum;
 import com.wenqi.isell.enums.ResultEnum;
 import com.wenqi.isell.exception.ISellException;
-import com.wenqi.isell.service.OrderService;
-import com.wenqi.isell.service.PayService;
-import com.wenqi.isell.service.ProductInfoService;
-import com.wenqi.isell.service.PushMessageService;
+import com.wenqi.isell.service.*;
 import com.wenqi.isell.util.KeyUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -57,6 +54,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Autowired
     private PushMessageService pushMessageService;
+
+    @Autowired
+    private WebSocket webSocket;
 
     /**
      * 创建订单
@@ -112,6 +112,8 @@ public class OrderServiceImpl implements OrderService {
                 .collect(Collectors.toList());
         infoService.decreaseStock(cartDTOList);
 
+        //发送webSocket消息
+        webSocket.sendMessage(orderDTO.getOrderId());
 
         return orderDTO;
     }
