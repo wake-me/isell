@@ -10,8 +10,10 @@ import com.wenqi.isell.vo.ProductInfoVO;
 import com.wenqi.isell.vo.ProductVO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
@@ -41,7 +43,10 @@ public class BuyerProductController {
      * @throws Exception
      */
     @GetMapping("/list")
-    public HttpResult list() throws Exception {
+//    @Cacheable(cacheNames = "product",key = "123")
+    // caheNames 换成名称， key缓存
+    @Cacheable(cacheNames = "product" ,key = "#sellerId" ,condition = "#sellerId.length()>3" ,unless = "#result.getCode() != 0")
+    public HttpResult list(@RequestParam String sellerId) throws Exception {
 
         // 1.查询所有上架商品
         List<ProductInfo> productInfoList = infoService.findUpAll();

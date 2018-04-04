@@ -9,6 +9,9 @@ import com.wenqi.isell.exception.ISellException;
 import com.wenqi.isell.service.ProductInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -26,6 +29,7 @@ import java.util.Optional;
  */
 @Service
 @Slf4j
+@CacheConfig(cacheNames = "product")
 public class ProductInfoServiceImpl implements ProductInfoService {
 
     @Autowired
@@ -37,6 +41,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
      * @return
      */
     @Override
+    @Cacheable(key = "123")
     public ProductInfo findOne(String productId) {
         Optional<ProductInfo> optionalInfo = infoDao.findById(productId);
         if (optionalInfo.isPresent())
@@ -70,6 +75,7 @@ public class ProductInfoServiceImpl implements ProductInfoService {
      * @return
      */
     @Override
+    @CachePut(key = "123")
     public ProductInfo save(ProductInfo productInfo) {
         return infoDao.save(productInfo);
     }

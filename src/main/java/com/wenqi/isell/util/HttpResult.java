@@ -2,6 +2,8 @@ package com.wenqi.isell.util;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * @ Author: 文琪
  * @ Description:
@@ -9,7 +11,9 @@ import lombok.Data;
  * @ Modified By:
  */
 @Data
-public class HttpResult<T> {
+public class HttpResult<T>  implements Serializable{
+
+    private static final long serialVersionUID = -4423326975924060605L;
 
     private Integer code;
 
