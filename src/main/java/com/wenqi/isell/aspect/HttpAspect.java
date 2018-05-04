@@ -32,7 +32,6 @@ public class HttpAspect {
         HttpServletRequest request = attributes.getRequest();
 
         //url
-        //url
         log.info("url= {}", request.getRequestURI());
 
         //method
